@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery Animation Box</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        #box {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgb(0, 0, 0);
+
+            /* Text styling */
+            color: white;
+            font-weight: bold;
+
+            /* Center text */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<button id="startBtn">Start Animation</button>
+
+<div id="box">BOX</div>
+
+<script>
+$(document).ready(function(){
+
+    $("#startBtn").click(function(){
+
+        var maxWidth = $(window).width() - $("#box").width();
+        var maxHeight = $(window).height() - $("#box").height();
+
+        $("#box")
+
+        // Top Left → Bottom Left
+        .animate({
+            top: maxHeight,
+            left: 0,
+            width: "120px",
+            height: "120px",
+            opacity: 0.5
+        }, 2000)
+        .css("background-color", "blue")
+
+        // Bottom Left → Bottom Right
+        .animate({
+            left: maxWidth,
+            width: "80px",
+            height: "80px"
+        }, 2000)
+        .css("background-color", "green")
+
+        // Bottom Right → Top Right
+        .animate({
+            top: 0,
+            opacity: 1
+        }, 2000)
+        .css("background-color", "orange")
+
+        // Top Right → Top Left
+        .animate({
+            left: 0,
+            width: "100px",
+            height: "100px"
+        }, 2000)
+        .css("background-color", "purple");
+    });
+
+});
+</script>
+
+</body>
+</html>
