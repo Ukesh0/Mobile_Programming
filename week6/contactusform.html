@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Segoe UI', sans-serif;
+    }
+
+    body{
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+    }
+
+    .container{
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
+      padding:35px;
+      width:380px;
+      border-radius:15px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.3);
+      color:#fff;
+    }
+
+    h2{
+      text-align:center;
+      margin-bottom:25px;
+      font-weight:600;
+    }
+
+    .group{
+      margin-bottom:18px;
+    }
+
+    input, textarea{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      font-size:14px;
+      background: rgba(255,255,255,0.15);
+      color:#fff;
+      outline:none;
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:#ddd;
+    }
+
+    textarea{
+      height:120px;
+      resize:none;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      border:none;
+      border-radius:8px;
+      color:#fff;
+      font-size:15px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      transform:scale(1.05);
+      box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    #status{
+      margin-top:15px;
+      text-align:center;
+      font-size:14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Contact Us</h2>
+
+  <div class="group">
+    <input type="text" id="name" placeholder="Your Name" />
+  </div>
+
+  <div class="group">
+    <input type="email" id="email" placeholder="Your Email" />
+  </div>
+
+  <div class="group">
+    <textarea id="msg" placeholder="Your Message"></textarea>
+  </div>
+
+  <button id="btn" onclick="sendMessage()">Send Message</button>
+
+  <p id="status"></p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+  // ✅ Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAHJuif0z2nLXOKfEb1vyZUeMw5gqRSxUI",
+    authDomain: "contact-form-239ef.firebaseapp.com",
+    databaseURL: "https://contact-form-239ef-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "contact-form-239ef",
+    storageBucket: "contact-form-239ef.firebasestorage.app",
+    messagingSenderId: "303672000710",
+    appId: "1:303672000710:web:dbdd9d31bed95fb05d97c7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.sendMessage = function () {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('msg').value.trim();
+    const status = document.getElementById('status');
+    const btn = document.getElementById('btn');
+
+    if (!name || !email || !message) {
+      status.style.color = 'red';
+      status.textContent = 'Please fill in all fields.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    status.textContent = '';
+
+    const newRef = push(ref(db, 'contactMessages'));
+    set(newRef, {
+      name,
+      email,
+      message,
+      createdAt: new Date().toISOString()
+    })
+    .then(() => {
+      status.style.color = '#00ffae';
+      status.textContent = 'Message sent successfully!';
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('msg').value = '';
+    })
+    .catch(err => {
+      status.style.color = '#ff4d4d';
+      status.textContent = 'Error: ' + err.message;
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+    });
+  };
+</script>
+
+</body>
+</html>
